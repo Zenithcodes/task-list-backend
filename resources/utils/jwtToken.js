@@ -13,5 +13,16 @@ const createToken = (user) => {
     return { accessToken, refreshToken };
 
 }
+const verifyRefreshToken = (token) => {
+    try {
+        return jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+        return null;
+    }
+};
+const generateAccessTokenFromRefreshToken = (decodedUser) => {
+    const { email, userid, name } = decodedUser;
+    return jwt.sign({ email, userid, name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+};
 
-module.exports = { createToken };
+module.exports = { createToken, verifyRefreshToken, generateAccessTokenFromRefreshToken };
